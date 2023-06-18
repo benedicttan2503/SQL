@@ -1,7 +1,7 @@
 # SQL 
 
 # Description
-This SQL code retrieves data from the bigquery-public-data.world_bank_intl_education.international_education table. It calculates rates of change and population ratios for specific indicators and years, focusing on the richest and poorest countries. To represent the wealthiest countries per GDP per capita by choosing 5 G7 nations. For the most impoverished ones, I chose five countries from this website: https://www.gfmag.com/global-data/economic-data/the-poorest-countries-in-the-world. 
+This SQL code retrieves data from the bigquery-public-data.world_bank_intl_education.international_education table. It calculates rates of change and population ratios for specific indicators and years, focusing on the richest and poorest countries. To represent the wealthiest countries per GDP per capita by choosing five G7 nations. For the most impoverished ones, I chose five countries from this website: https://www.gfmag.com/global-data/economic-data/the-poorest-countries-in-the-world. 
 
 #Note:
 There is missing information due to countries not having data in the same decade or simply because the World Bank does not have enough information about the countries.
