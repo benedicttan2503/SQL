@@ -1,16 +1,15 @@
 SELECT
-  pop.country_name,
-  pop.indicator_name,
-  pop.year_1980,
-  pop.year_1990,
-  (pop.year_1990 - pop.year_1980) / ABS(pop.year_1980) AS rate_1980_to_1990,
-  pop.year_2000,
-  (pop.year_2000 - pop.year_1990) / ABS(pop.year_1990) AS rate_1990_to_2000,
-  pop.year_2010,
-  (pop.year_2010 - pop.year_2000) / ABS(pop.year_2000) AS rate_2000_to_2010,
-  enroll.first_population_2010 / complete.first_enrolment_2010 AS first_grade_population_ratio,
-  enroll.last_population_2010 / complete.last_enrolment_2010 AS last_grade_population_ratio
-
+  complete.country_name,
+  complete.indicator_name,
+  complete.year_1980,
+  complete.year_1990,
+  (complete.year_1990 - complete.year_1980) / ABS(complete.year_1980) AS rate_1980_to_1990,
+  complete.year_2000,
+  (complete.year_2000 - complete.year_1990) / ABS(complete.year_1990) AS rate_1990_to_2000,
+  complete.year_2010,
+  (complete.year_2010 - complete.year_2000) / ABS(complete.year_2000) AS rate_2000_to_2010,
+  pop.first_population_2010 / enroll.first_enrolment_2010 AS first_grade_population_ratio,
+  pop.last_population_2010 / enroll.last_enrolment_2010 AS last_grade_population_ratio
 FROM
   (SELECT -- grouped by country and indicator and creating new columns by decade.
     country_name,
@@ -21,12 +20,12 @@ FROM
     MAX(CASE WHEN year = 2010 THEN value END) AS year_2010
   FROM
     bigquery-public-data.world_bank_intl_education.international_education
-  WHERE -- Chosing Poorest and Richest country by GDP per capita and filtering to only get expenditure and Enrolment.
+  WHERE -- Choosing Poorest and Richest country by GDP per capita and filtering to only get expenditure and Enrolment.
     (country_name = "Burundi" OR country_name = "Central African Republic" OR country_name = "Mozambique" OR country_name = "Niger" OR country_name LIKE "%Congo%" OR country_name = "France" OR country_name = "United Kingdom" OR country_name LIKE "%United States%" OR country_name = "Canada" OR country_name = "Italy") AND
     (indicator_name LIKE '%GDP per capita (constant 2005 US$)%' OR indicator_name LIKE "Expenditure on primary as % of total government expenditure (%)" OR indicator_name LIKE "%Enrolment in Grade 1 of primary education%" OR indicator_name LIKE "%Enrolment in Grade 2 of primary education%" OR indicator_name LIKE "%Enrolment in Grade 3 of primary education%" OR indicator_name LIKE "%Enrolment in Grade 4 of primary education%" OR indicator_name LIKE "%Enrolment in Grade 5 of primary education%" OR indicator_name LIKE "%Population of the official entrance age to primary education%" OR indicator_name LIKE "%Population of the official age for the last grade of primary education%" OR indicator_name LIKE "%Population of the official entrance age to primary education%")
   GROUP BY
     country_name,
-    indicator_name) AS pop
+    indicator_name) AS complete
 LEFT JOIN
   (SELECT -- Storing population for first and last graders to perform calculation of the ratio.
     country_name,
@@ -39,21 +38,22 @@ LEFT JOIN
     (country_name = "Burundi" OR country_name = "Central African Republic" OR country_name = "Somalia" OR country_name = "South Sudan" OR country_name = "Democratic Republic of the Congo" OR country_name = "France" OR country_name = "United Kingdom" OR country_name LIKE "%United States%" OR country_name = "Canada" OR country_name = "Italy") AND
     (indicator_name LIKE "%Population of the official entrance age to primary education%" OR indicator_name LIKE "%Population of the official age for the last grade of primary education%")
   GROUP BY
-    country_name) AS enroll
+    country_name) AS pop
 ON
-  pop.country_name = enroll.country_name
+  complete.country_name = pop.country_name
 LEFT JOIN
   (SELECT -- Storing enrolment for first and last graders to perform calculation of the ratio.
     country_name,
     MAX(CASE WHEN year = 2010 AND indicator_name LIKE "%Enrolment in Grade 1 of primary education%" THEN value END) AS first_enrolment_2010,
     MAX(CASE WHEN year = 2010 AND indicator_name LIKE "%Enrolment in Grade 5 of primary education%" THEN value END) AS last_enrolment_2010
-    
+
   FROM
     bigquery-public-data.world_bank_intl_education.international_education
   WHERE
     (country_name = "Burundi" OR country_name = "Central African Republic" OR country_name = "Somalia" OR country_name = "South Sudan" OR country_name = "Democratic Republic of the Congo" OR country_name = "France" OR country_name = "United Kingdom" OR country_name LIKE "%United States%" OR country_name = "Canada" OR country_name = "Italy") AND
     (indicator_name LIKE "%Enrolment in Grade 1 of primary education%" OR indicator_name LIKE "%Enrolment in Grade 5 of primary education%")
   GROUP BY
-    country_name) AS complete
+    country_name) AS enroll
 ON
-  pop.country_name = complete.country_name;
+  complete.country_name = enroll.country_name;
+
