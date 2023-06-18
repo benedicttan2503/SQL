@@ -21,7 +21,7 @@ FROM
   FROM
     bigquery-public-data.world_bank_intl_education.international_education
   WHERE -- Choosing Poorest and Richest country by GDP per capita and filtering to only get expenditure and Enrolment.
-    (country_name = "Burundi" OR country_name = "Central African Republic" OR country_name = "Mozambique" OR country_name = "Niger" OR country_name LIKE "%Congo%" OR country_name = "France" OR country_name = "United Kingdom" OR country_name LIKE "%United States%" OR country_name = "Canada" OR country_name = "Italy") AND
+    (country_name = "Burundi" OR country_name = "Congo, Dem. Rep." OR country_name = "Mozambique" OR country_name = "Niger" OR country_name = "France" OR country_name = "United Kingdom" OR country_name LIKE "%United States%" OR country_name = "Canada" OR country_name = "Italy") AND
     (indicator_name LIKE '%GDP per capita (constant 2005 US$)%' OR indicator_name LIKE "Expenditure on primary as % of total government expenditure (%)" OR indicator_name LIKE "%Enrolment in Grade 1 of primary education%" OR indicator_name LIKE "%Enrolment in Grade 2 of primary education%" OR indicator_name LIKE "%Enrolment in Grade 3 of primary education%" OR indicator_name LIKE "%Enrolment in Grade 4 of primary education%" OR indicator_name LIKE "%Enrolment in Grade 5 of primary education%" OR indicator_name LIKE "%Population of the official entrance age to primary education%" OR indicator_name LIKE "%Population of the official age for the last grade of primary education%" OR indicator_name LIKE "%Population of the official entrance age to primary education%")
   GROUP BY
     country_name,
@@ -35,7 +35,7 @@ LEFT JOIN
   FROM
     bigquery-public-data.world_bank_intl_education.international_education
   WHERE
-    (country_name = "Burundi" OR country_name = "Central African Republic" OR country_name = "Somalia" OR country_name = "South Sudan" OR country_name = "Democratic Republic of the Congo" OR country_name = "France" OR country_name = "United Kingdom" OR country_name LIKE "%United States%" OR country_name = "Canada" OR country_name = "Italy") AND
+    (country_name = "Burundi" OR country_name = "Congo, Dem. Rep." OR country_name = "Somalia" OR country_name = "South Sudan" OR country_name = "France" OR country_name = "United Kingdom" OR country_name LIKE "%United States%" OR country_name = "Canada" OR country_name = "Italy") AND
     (indicator_name LIKE "%Population of the official entrance age to primary education%" OR indicator_name LIKE "%Population of the official age for the last grade of primary education%")
   GROUP BY
     country_name) AS pop
@@ -50,7 +50,7 @@ LEFT JOIN
   FROM
     bigquery-public-data.world_bank_intl_education.international_education
   WHERE
-    (country_name = "Burundi" OR country_name = "Central African Republic" OR country_name = "Somalia" OR country_name = "South Sudan" OR country_name = "Democratic Republic of the Congo" OR country_name = "France" OR country_name = "United Kingdom" OR country_name LIKE "%United States%" OR country_name = "Canada" OR country_name = "Italy") AND
+    (country_name = "Burundi" OR country_name = "Congo, Dem. Rep." OR country_name = "Somalia" OR country_name = "South Sudan" OR country_name = "France" OR country_name = "United Kingdom" OR country_name LIKE "%United States%" OR country_name = "Canada" OR country_name = "Italy") AND
     (indicator_name LIKE "%Enrolment in Grade 1 of primary education%" OR indicator_name LIKE "%Enrolment in Grade 5 of primary education%")
   GROUP BY
     country_name) AS enroll
